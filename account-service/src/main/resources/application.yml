@@ -1,0 +1,19 @@
+server:
+  port: 8084
+
+spring:
+  application.name: account-service
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        accounts:
+          destination: accounts
+          content-type: application/json
+          group: account-consumer-group
+        subscriptions:
+          destination: subscriptions
+          content-type: application/json
+          group: subscription-consumer-group

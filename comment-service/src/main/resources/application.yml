@@ -1,0 +1,18 @@
+server:
+  port: 8083
+
+spring:
+  application.name: comment-service
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        comments:
+          destination: comments
+          content-type: application/json
+          group: comment-consumer-group
+  data:
+    mongodb:
+      port: 0

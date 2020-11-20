@@ -1,0 +1,40 @@
+server:
+  port: 8082
+
+spring:
+  application.name: video-service
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+      bindings:
+        videos:
+          destination: videos
+          content-type: application/json
+          group: video-consumer-group
+        ratings:
+          destination: ratings
+          content-type: application/json
+          group: rating-consumer-group
+        views:
+          destination: views
+          content-type: application/json
+          group: view-consumer-group
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+  jpa:
+    properties:
+      hibernate:
+        search:
+          lucene_version: LATEST
+          default:
+            indexmanager: elasticsearch
+            elasticsearch:
+              host: http://localhost:9200
+              index_schema_management_strategy: drop-and-create
+              required_index_status: yellow
+
