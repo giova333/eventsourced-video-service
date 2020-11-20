@@ -1,4 +1,4 @@
-#Eventsourced video service
+# Eventsourced video service
 
 Eventsourced video service is a proof-of-concept showcasing a
 central unified log approach. 
@@ -9,7 +9,7 @@ central unified log approach.
 From the diagram you can see that this architecture covers two
 patterns: [CQRS](https://martinfowler.com/bliki/CQRS.html) and [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html).
 
-####EventWriter 
+#### EventWriter 
 EventWriter service is an entry point for all write operations. 
 Its responsibility is validating of incoming requests and routing them to appropriate Kafka topics.
 The list of write operations:
@@ -69,17 +69,17 @@ The list of write operations:
 In the ideal world the information such `accountId` should be retrieved from the JWT token or Authorization Service 
 but for the sake of simplicity we didn't implement infrastructure services such auth, registry, gateway, etc
 
-####Kafka
+#### Kafka
 The role of Kafka can be named differently here:
 - Single source of truth 
 - Event Store in the event sourcing implementation
 - Log in write-ahead logging (WAL) pattern.
 
-####Query Services
+#### Query Services
 Query services consumes messages from Kafka and update their read models.
 Each query service stores data in its own database and provides a set of 
 query endpoints to the end user:
-#####Video Service:
+##### Video Service:
 - [Query all videos](http://localhost:8082/videos)
 - [Query most rated videos](http://localhost:8082/videos?sort=rating,desc)
 - [Query most viewed videos](http://localhost:8082/videos?sort=views,desc)
@@ -88,14 +88,14 @@ query endpoints to the end user:
 - [Query account videos](http://localhost:8082/videos?accountId={accountId1})
 - [Query videos of the followed accounts](http://localhost:8082/videos?accountId={accountId1}&accountId={accountId2})
 
-#####Account Service:
+##### Account Service:
 - [Query account info](http://localhost:8084/accounts/{accountId})
 - [Query account subscriptions](http://localhost:8084/accounts/{accountId}/subscriptions)
 
-#####Comment Service:
+##### Comment Service:
 - [Query video comments](http://localhost:8083/comments/video/{videoId})
 
-#####Video statistic service:
+##### Video statistic service:
 - [Query real-time video statistics](http://localhost:8086/video-statistic) \
 Video statistic service is a part of the stream processing flow.
 Video stream processor is a kafka stream processing job that consumes and join data
@@ -103,7 +103,7 @@ from three topics `videos, views, ratings` and then send the aggregated data to 
 Video statistic service consumes the data from `video-statistic` topic and performs UI live updates.
 
 ## Pros and Cons of this architecture
-#####Pros:
+##### Pros:
 - All services are loosely coupled
 - Extensibility. Since all events occurred in the system are stored in Kafka, we can easily add new service and 
 replay all the events. Might be useful for analytics, CQRS(materialized view), etc.
@@ -111,7 +111,7 @@ replay all the events. Might be useful for analytics, CQRS(materialized view), e
 - System is protected from [Back pressure](https://www.youtube.com/watch?v=K3axU2b0dDk) since Kafka uses a pull model(and not push like RabbitMQ or JMS), consumers won't be overloaded.
 - This architecture automatically removes dual write problem because write-ahead logging approach is used.
 
-#####Const:
+##### Const:
 - Since everything is async, we cannot provide feedback to the end user immediately
 - Since Kafka is single source of truth it's also a single point of failure. Proper configuration,
 highly availability and durability must be guaranteed!
