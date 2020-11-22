@@ -21,6 +21,14 @@ spring:
           destination: views
           content-type: application/json
           group: view-consumer-group
+        accounts:
+          destination: accounts
+          content-type: application/json
+          group: video-account-consumer-group
+        subscriptions:
+          destination: subscriptions
+          content-type: application/json
+          group: video-subscription-consumer-group
   h2:
     console:
       enabled: true

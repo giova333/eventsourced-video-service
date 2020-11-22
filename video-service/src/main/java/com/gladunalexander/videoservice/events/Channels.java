@@ -8,6 +8,8 @@ public interface Channels {
     String VIDEOS = "videos";
     String RATINGS = "ratings";
     String VIEWS = "views";
+    String ACCOUNTS = "accounts";
+    String SUBSCRIPTIONS = "subscriptions";
 
     @Input(VIDEOS)
     SubscribableChannel videos();
@@ -17,4 +19,10 @@ public interface Channels {
 
     @Input(VIEWS)
     SubscribableChannel views();
+
+    @Input(ACCOUNTS)
+    SubscribableChannel accounts();
+
+    @Input(SUBSCRIPTIONS)
+    SubscribableChannel subscriptions();
 }

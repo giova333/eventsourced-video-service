@@ -1,5 +1,7 @@
 package com.gladunalexander.videoservice.events;
 
+import com.gladunalexander.videoservice.persistance.Account;
+import com.gladunalexander.videoservice.persistance.AccountRepository;
 import com.gladunalexander.videoservice.persistance.Video;
 import com.gladunalexander.videoservice.persistance.VideoRating;
 import com.gladunalexander.videoservice.persistance.VideoRatingRepository;
@@ -27,6 +29,7 @@ public class EventHandler {
     private final VideoRepository videoRepository;
     private final VideoRatingRepository videoRatingRepository;
     private final VideoViewRepository videoViewRepository;
+    private final AccountRepository accountRepository;
 
     @StreamListener(Channels.VIDEOS)
     public void handle(VideoRegisteredEvent event) {
@@ -88,5 +91,20 @@ public class EventHandler {
         );
         Video video = optionalVideo.get();
         video.setViews(videoViewRepository.getViewsOf(video.getId()));
+    }
+
+    @StreamListener(Channels.ACCOUNTS)
+    public void handle(AccountRegisteredEvent event) {
+        accountRepository.save(new Account(event.getAggregateId()));
+    }
+
+    @StreamListener(Channels.SUBSCRIPTIONS)
+    public void handle(SubscribedToAccountEvent event) {
+        Optional<Account> accountOptional = accountRepository.findById(event.getAggregateId());
+        if (accountOptional.isEmpty()) {
+            log.warn("Account [{}] doesn't exist", event.getAggregateId());
+            return;
+        }
+        accountOptional.get().addSubscription(event.getTargetAccountId());
     }
 }

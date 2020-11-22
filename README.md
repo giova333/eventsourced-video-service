@@ -86,7 +86,7 @@ query endpoints to the end user:
 - [Query account view history](http://localhost:8082/videos/{accountId}/history)
 - [Query videos by keywords](http://localhost:8082/videos/search?text={keyword})
 - [Query account videos](http://localhost:8082/videos?accountId={accountId1})
-- [Query videos of the followed accounts](http://localhost:8082/videos?accountId={accountId1}&accountId={accountId2})
+- [Query videos of the followed accounts](http://localhost:8082/videos/{accountId}/followed)
 
 ##### Account Service:
 - [Query account info](http://localhost:8084/accounts/{accountId})
@@ -110,9 +110,10 @@ replay all the events. Might be useful for analytics, CQRS(materialized view), e
 - Scalability. Read and Write services can be scaled independently. 
 - System is protected from [Back pressure](https://www.youtube.com/watch?v=K3axU2b0dDk) since Kafka uses a pull model(and not push like RabbitMQ or JMS), consumers won't be overloaded.
 - This architecture automatically removes dual write problem because write-ahead logging approach is used.
+- Easy to back up and restore.
 
 ##### Const:
-- Since everything is async, we cannot provide feedback to the end user immediately
+- Since everything is async(Eventual consistency is everywhere), we cannot provide feedback to the end user immediately
 - Since Kafka is single source of truth it's also a single point of failure. Proper configuration,
 highly availability and durability must be guaranteed!
 - At the edge only basic validation can be applied because business rules and constraints
